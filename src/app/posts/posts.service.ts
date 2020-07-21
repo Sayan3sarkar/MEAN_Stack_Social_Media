@@ -26,7 +26,10 @@ export class PostsService {
       title,
       content
     };
-    this.posts.push(post);
-    this.postsUpdated.next(this.posts.slice());
+    this.http.post<{ message: string }>('http://localhost:3000/api/posts', post).subscribe((responseData) => {
+      console.log(responseData.message);
+      this.posts.push(post);
+      this.postsUpdated.next(this.posts.slice());
+    });
   }
 }
