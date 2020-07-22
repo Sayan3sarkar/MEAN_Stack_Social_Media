@@ -21,6 +21,10 @@ export class PostsService {
 
   constructor(private http: HttpClient){}
 
+  /**
+   * Fetch all posts
+   * @memberof PostsService
+   */
   public getPosts(): void {
     this.http.get<{ message: string, posts: PostResponseData[]}>('http://localhost:3000/api/posts')
       .pipe(map( postData => {
@@ -38,6 +42,14 @@ export class PostsService {
     });
   }
 
+
+
+  /**
+   * Add a new post
+   * @param title
+   * @param content
+   * @memberof PostsService
+   */
   public addPost(title: string, content: string): void{
     const post: Post = {
       id: null,
@@ -51,7 +63,42 @@ export class PostsService {
     });
   }
 
-  public deletePost(postId: string) {
+
+
+  /**
+   * Fetch a specfic post
+   * @param id
+   * @memberof PostsService
+   */
+  public getPost(id: string): Post{
+    return { ...this.posts.find(p => p.id === id) };
+  }
+
+
+
+  /**
+   * Update a post
+   * @param id
+   * @param title
+   * @param content
+   * @memberof PostsService
+   */
+  public updatePost(id: string, title: string, content: string) {
+    const post: Post = { id, title, content };
+    this.http.put<{ message: string }>('http://localhost:3000/api/posts/' + id, post)
+      .subscribe(response => {
+        console.log(response);
+    });
+  }
+
+
+
+  /**
+   * Delete a post by ID
+   * @param postId
+   * @memberof PostsService
+   */
+  public deletePost(postId: string): void{
     this.http.delete('http://localhost:3000/api/posts/' + postId)
       .subscribe(() => {
         console.log('Deleted');

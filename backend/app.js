@@ -7,7 +7,7 @@ const Post = require('./models/post');
 const app = express();
 
 // Database Connection
-mongoose.connect("***", { useUnifiedTopology: true, useNewUrlParser: true }) // Insert Connection String in place of ***
+mongoose.connect("**", { useUnifiedTopology: true, useNewUrlParser: true }) // Insert Connection String in place of ***
     .then(() => {
         console.log('Connected to Database');
     })
@@ -49,6 +49,20 @@ app.get('/api/posts', (req, res, next) => {
                 message: 'Posts Fetched Successfully!',
                 posts: posts
             });
+        });
+});
+
+// Update Posts
+app.put('/api/posts/:id', (req, res, next) => {
+    const post = new Post({
+        _id: req.body.id,
+        title: req.body.title,
+        content: req.body.content
+    });
+    Post.updateOne({ _id: req.params.id }, post)
+        .then(result => {
+            console.log(result);
+            res.status(200).json({ message: 'Update Successful' });
         });
 });
 
