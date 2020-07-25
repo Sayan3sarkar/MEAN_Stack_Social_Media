@@ -86,13 +86,23 @@ export class PostsService {
    * @param --(content: string)
    * @returns --void
    */
-  public updatePost(id: string, title: string, content: string): void {
-    const post: Post = { id, title, content, imagePath: null};
-    this.http.put<{ message: string }>('http://localhost:3000/api/posts/' + id, post)
+  public updatePost(id: string, title: string, content: string, image: File | string): void {
+    let postData: Post | FormData;
+    if (typeof (image) === 'object') {
+      postData = new FormData();
+      postData.append('id', id);
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
+    } else {
+      postData = { id, title, content, imagePath: image };
+    }
+    this.http.put<{ message: string }>('http://localhost:3000/api/posts/' + id, postData)
       .subscribe(response => {
         // Immutably updating this.posts
         const updatedPosts = this.posts.slice();
-        const oldPostIndex = updatedPosts.findIndex(p => p.id === post.id);
+        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+        const post: Post = {id, title, content, imagePath: ''};
         updatedPosts[oldPostIndex] = post;
         this.posts = updatedPosts;
         this.postsUpdated.next(this.posts.slice());

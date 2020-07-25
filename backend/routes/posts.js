@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const multer = require('multer');
-const { create } = require('../models/post');
 
 const Post = require('../models/post');
 
@@ -31,7 +30,7 @@ const storage = multer.diskStorage({
 router.get('/', (req, res, next) => {
     Post.find()
         .then(posts => {
-            console.log(posts);
+            console.log('From GET posts: ' + posts);
             res.status(200).json({
                 message: 'Posts Fetched Successfully!',
                 posts: posts
@@ -45,7 +44,7 @@ router.post('/', multer({ storage: storage }).single('image'), (req, res, next) 
     const post = new Post({
         title: req.body.title,
         content: req.body.content,
-        imagePath: url + '/images' + req.file.filename
+        imagePath: url + '/images/' + req.file.filename
     });
     post.save().then(createdPost => {
         res.status(201).json({
@@ -70,12 +69,19 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Update a specfic post based on id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', multer({ storage: storage }).single('image'), (req, res, next) => {
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+        const url = req.protocol + '://' + req.get('host');
+        imagePath = url + '/images/' + req.file.filename;
+    }
     const post = new Post({
         _id: req.body.id,
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath: imagePath
     });
+    console.log('Post from server: ' + post);
     Post.updateOne({ _id: req.params.id }, post)
         .then(result => {
             res.status(200).json({ message: 'Update Successful' });
