@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const postsRoutes = require('./routes/posts');
 
 const app = express();
 
 // Database Connection
-mongoose.connect("**", { useUnifiedTopology: true, useNewUrlParser: true }) // Insert Connection String in place of ***
+mongoose.connect(`${process.env.MONGODB_ATLAS_URI}`, { useUnifiedTopology: true, useNewUrlParser: true }) // Insert Connection String in place of ***
     .then(() => {
         console.log('Connected to Database');
     })

@@ -11,6 +11,7 @@ export interface PostResponseData {
   title: string;
   content: string;
   __v: number;
+  imagePath: string;
 }
 
 @Injectable({
@@ -33,7 +34,8 @@ export class PostsService {
           return {
             title: post.title,
             content: post.content,
-            id: post._id.toString()
+            id: post._id.toString(),
+            imagePath: post.imagePath
           };
         });
       }))
@@ -51,14 +53,13 @@ export class PostsService {
    * @param --(content: string)
    * @returns --void
    */
-  public addPost(title: string, content: string): void{
-    const post: Post = {
-      id: null,
-      title,
-      content
-    };
-    this.http.post<{ message: string, postId: string }>('http://localhost:3000/api/posts', post).subscribe((responseData) => {
-      post.id = responseData.postId;
+  public addPost(title: string, content: string, image: File): void{
+    const postData = new FormData();
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('image', image, title);
+    this.http.post<{ message: string, post: Post }>('http://localhost:3000/api/posts', postData).subscribe((responseData) => {
+      const post: Post = { id: responseData.post.id, title, content, imagePath: responseData.post.imagePath};
       this.posts.push(post);
       this.postsUpdated.next(this.posts.slice());
       this.router.navigate(['/']);
@@ -86,7 +87,7 @@ export class PostsService {
    * @returns --void
    */
   public updatePost(id: string, title: string, content: string): void {
-    const post: Post = { id, title, content };
+    const post: Post = { id, title, content, imagePath: null};
     this.http.put<{ message: string }>('http://localhost:3000/api/posts/' + id, post)
       .subscribe(response => {
         // Immutably updating this.posts
