@@ -1,9 +1,11 @@
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const postsRoutes = require('./routes/posts');
+const cron = require('node-cron');
 
 const app = express();
 
@@ -26,6 +28,35 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS'); //List of methods of client to be allowed to access server
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, X-Requested-With, Accept'); //List of headers of client to be allowed to access server
     next();
+});
+
+const Post = require('./models/post');
+
+cron.schedule('*/5 * * * *', () => { // cron job to delete non usable images every 5 mins
+    console.log('Start Cron Job');
+    const dbFileNames = [];
+    const localFiles = [];
+    let uncommonFiles = [];
+    Post.find().then(posts => {
+        for (const post of posts) {
+            const imagePathURL = new URL(post.imagePath);
+            const imagePath = imagePathURL.pathname.split('/');
+            dbFileNames.push(imagePath[2]);
+        }
+        fs.readdir(path.join('backend/images'), (err, files) => {
+            if (err) {
+                return console.log('Unable to scan directory');
+            }
+            files.forEach(file => {
+                localFiles.push(file.toString());
+            });
+            uncommonFiles = localFiles.filter(file => dbFileNames.indexOf(file) === -1);
+            for (const file of uncommonFiles) {
+                fs.unlinkSync(path.join('backend/images/' + file));
+            }
+        });
+    });
+    console.log('End CRON job');
 });
 
 app.use('/api/posts', postsRoutes);
