@@ -28,12 +28,25 @@ const storage = multer.diskStorage({
 
 // Fetch Posts
 router.get('/', (req, res, next) => {
-    Post.find()
+    const pageSize = +req.query.pagesize;
+    const currentPage = +req.query.page;
+    const postQuery = Post.find();
+    let fetchedPosts;
+    if (pageSize && currentPage) {
+        postQuery
+            .skip(pageSize * (currentPage - 1)) // if pageSize = 10 and currentPage  = 2, we would like to skip first page
+            // posts, i.e. the first (10 x (2 - 1)) = 10 posts;
+            .limit(pageSize);
+    }
+    postQuery
         .then(posts => {
-            console.log('From GET posts: ' + posts);
+            fetchedPosts = posts;
+            return Post.countDocuments();
+        }).then(count => {
             res.status(200).json({
                 message: 'Posts Fetched Successfully!',
-                posts: posts
+                posts: fetchedPosts,
+                maxPosts: count
             });
         });
 });

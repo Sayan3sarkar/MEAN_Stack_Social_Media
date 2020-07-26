@@ -54,9 +54,9 @@ cron.schedule('*/5 * * * *', () => { // cron job to delete non usable images eve
             for (const file of uncommonFiles) {
                 fs.unlinkSync(path.join('backend/images/' + file));
             }
+            console.log('End CRON job');
         });
     });
-    console.log('End CRON job');
 });
 
 app.use('/api/posts', postsRoutes);
