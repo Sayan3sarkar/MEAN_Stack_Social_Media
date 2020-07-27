@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const postsRoutes = require('./routes/posts');
+const authRoutes = require('./routes/auth');
 const cron = require('node-cron');
 
 const app = express();
@@ -60,5 +61,6 @@ cron.schedule('*/5 * * * *', () => { // cron job to delete non usable images eve
 });
 
 app.use('/api/posts', postsRoutes);
+app.use('api/auth', authRoutes);
 
 module.exports = app;
