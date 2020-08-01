@@ -63,7 +63,8 @@ exports.loginController = (req, res, next) => {
             );
             res.status(200).json({
                 message: 'Logged In',
-                token: token
+                token: token,
+                expiresIn: 3600
             });
         })
         .catch(err => {
