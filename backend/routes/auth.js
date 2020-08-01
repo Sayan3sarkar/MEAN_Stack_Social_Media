@@ -1,10 +1,11 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
 router.post('/signup', (req, res, next) => {
-    const email = req.body.email;
+    // const email = req.body.email;
     const password = req.body.password;
     bcrypt.hash(password, 12)
         .then(hashedPw => {

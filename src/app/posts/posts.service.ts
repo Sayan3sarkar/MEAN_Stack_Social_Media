@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { Post } from './post.model';
+import { environment } from '@env/environment';
 
 export interface PostResponseData {
   _id: any;
@@ -29,7 +30,7 @@ export class PostsService {
    */
   public getPosts(postsPerPage: number, currentPage: number): void {
     const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
-    this.http.get<{ message: string, posts: PostResponseData[], maxPosts: number}>('http://localhost:3000/api/posts' + queryParams)
+    this.http.get<{ message: string, posts: PostResponseData[], maxPosts: number}>(`${environment.API_ENDPOINT_URL}/posts${queryParams}`)
       .pipe(map( postData => {
         return {
           posts: postData.posts.map(post => {
@@ -62,7 +63,7 @@ export class PostsService {
     postData.append('title', title);
     postData.append('content', content);
     postData.append('image', image, title);
-    this.http.post<{ message: string, post: Post,  }>('http://localhost:3000/api/posts', postData).subscribe((responseData) => {
+    this.http.post<{ message: string, post: Post,  }>(`${environment.API_ENDPOINT_URL}/posts`, postData).subscribe((responseData) => {
       this.router.navigate(['/']);
     });
   }
@@ -75,7 +76,7 @@ export class PostsService {
    * @returns --(post: Post)
    */
   public getPost(id: string): Observable<PostResponseData>{
-    return this.http.get<PostResponseData>('http://localhost:3000/api/posts/' + id);
+    return this.http.get<PostResponseData>(`${environment.API_ENDPOINT_URL}/posts/${id}`);
   }
 
 
@@ -98,7 +99,7 @@ export class PostsService {
     } else {
       postData = { id, title, content, imagePath: image };
     }
-    this.http.put<{ message: string }>('http://localhost:3000/api/posts/' + id, postData)
+    this.http.put<{ message: string }>(`${environment.API_ENDPOINT_URL}/posts/${id}`, postData)
       .subscribe(response => {
         this.router.navigate(['/']);
     });
@@ -112,6 +113,6 @@ export class PostsService {
    * @returns --void
    */
   public deletePost(postId: string): Observable<{message: string}>{
-    return this.http.delete<{message: string}>('http://localhost:3000/api/posts/' + postId);
+    return this.http.delete<{message: string}>(`${environment.API_ENDPOINT_URL}/posts/${postId}`);
   }
 }
