@@ -8,11 +8,12 @@ import { Post } from './post.model';
 import { environment } from '@env/environment';
 
 export interface PostResponseData {
-  _id: any;
+  _id: string;
   title: string;
   content: string;
   __v: number;
   imagePath: string;
+  creator: any;
 }
 
 @Injectable({
@@ -34,19 +35,22 @@ export class PostsService {
       .pipe(map( postData => {
         return {
           posts: postData.posts.map(post => {
+            console.log(post);
             return {
               title: post.title,
               content: post.content,
               id: post._id.toString(),
-              imagePath: post.imagePath
+              imagePath: post.imagePath,
+              creator: post.creator
             };
           }),
           maxPosts: postData.maxPosts
         };
       }))
-      .subscribe( transformedPostData => {
-      this.posts = transformedPostData.posts;
-      this.postsUpdated.next({posts: this.posts.slice(), postCount: transformedPostData.maxPosts});
+      .subscribe(transformedPostData => {
+        console.log(transformedPostData);
+        this.posts = transformedPostData.posts;
+        this.postsUpdated.next({posts: this.posts.slice(), postCount: transformedPostData.maxPosts});
     });
   }
 
@@ -97,7 +101,8 @@ export class PostsService {
       postData.append('content', content);
       postData.append('image', image, title);
     } else {
-      postData = { id, title, content, imagePath: image };
+      postData = { id, title, content, imagePath: image, creator: null };
+      // setting creator to null ensures creator id is updated from server side and can't be manipulated from client-side
     }
     this.http.put<{ message: string }>(`${environment.API_ENDPOINT_URL}/posts/${id}`, postData)
       .subscribe(response => {
