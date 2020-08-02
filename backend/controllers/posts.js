@@ -27,6 +27,11 @@ exports.getPostsController = (req, res, next) => {
                 posts: fetchedPosts,
                 maxPosts: count
             });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Fetching posts failed'
+            });
         });
 };
 
@@ -45,14 +50,19 @@ exports.addPostController = (req, res, next) => {
         creator: req.userData.userId
     });
     post.save().then(createdPost => {
-        res.status(201).json({
-            message: "Post Added Successfully",
-            post: {
-                ...createdPost,
-                id: createdPost._id
-            }
+            res.status(201).json({
+                message: "Post Added Successfully",
+                post: {
+                    ...createdPost,
+                    id: createdPost._id
+                }
+            });
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Creating a post failed'
+            });
         });
-    });
 };
 
 /**
@@ -63,12 +73,17 @@ exports.addPostController = (req, res, next) => {
  */
 exports.getSinglePostController = (req, res, next) => {
     Post.findById(req.params.id).then(post => {
-        if (post) {
-            res.status(200).json(post);
-        } else {
-            res.status(404).json({ message: 'Post Not found' });
-        }
-    });
+            if (post) {
+                res.status(200).json(post);
+            } else {
+                res.status(404).json({ message: 'Post Not found' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Fetching a post failed'
+            });
+        });
 };
 
 /**
@@ -98,6 +113,11 @@ exports.updatePostController = (req, res, next) => {
             } else {
                 res.status(401).json({ message: 'Not Authorized' });
             }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Updating failed. Could\'\nt update post'
+            });
         });
 };
 
@@ -116,5 +136,10 @@ exports.deletePostController = (req, res, next) => {
             } else {
                 res.status(401).json({ message: 'Not Authorized' });
             }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'Deletion of this post could not be performed. Try again after some time'
+            });
         });
 };
