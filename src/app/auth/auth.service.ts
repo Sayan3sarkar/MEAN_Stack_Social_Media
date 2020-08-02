@@ -41,6 +41,8 @@ export class AuthService {
       .subscribe(res => {
         console.log(res);
         this.router.navigate(['/login']);
+      }, error => {
+          this.authStatusListener.next(false);
       });
   }
 
@@ -89,7 +91,9 @@ export class AuthService {
           this.authStatusListener.next(false);
           this.router.navigate(['/']);
         }
-    });
+    }, error => {
+      this.authStatusListener.next(false);
+  });
   }
 
   /**
