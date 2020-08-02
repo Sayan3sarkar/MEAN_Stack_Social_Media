@@ -69,9 +69,7 @@ export class AuthService {
         this.token = res.token;
         if (this.token) {
           const expiresInDuration = res.expiresIn;
-          this.tokenTimer = setTimeout(() => {
-            this.logout();
-          }, expiresInDuration * 1000);
+          this.setAuthTimer(expiresInDuration);
           this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
@@ -96,6 +94,17 @@ export class AuthService {
   }
 
   /**
+   * Utility method for Authentication timeout check
+   * @param --(duration: timer)
+   */
+  private setAuthTimer(duration: number) {
+    console.log('Setting Timer: ' + duration);
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000);
+  }
+
+  /**
    * Save Data to localStorage
    * @param --(token: string)
    * @param --(expirationDate: Date)
@@ -106,10 +115,43 @@ export class AuthService {
   }
 
   /**
+   * Checks user authentication status on app starting/re-loading
+   */
+  public autoAuthUser() {
+    const authInfo = this.getAuthData();
+    if (!authInfo) {
+      return;
+    }
+    const now = new Date();
+    const expiresIn = authInfo.expirationDate.getTime() - now.getTime();
+    if (expiresIn > 0) {
+      this.token = authInfo.token;
+      this.setAuthTimer(expiresIn / 1000); // since setAuthTimer() accepts duration parameter in seconds and expireIn is in milliseconds
+      this.authStatusListener.next(true);
+    }
+  }
+
+  /**
    * Remove Data from localStorage
    */
   private clearAuthData(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
+  }
+
+  /**
+   * Get Data from localstorage
+   * @returns --(null | { token: string, expirationDate: Date })
+   */
+  private getAuthData(): { token: string, expirationDate: Date } | null {
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('expirationDate');
+    if (!token || !expirationDate) {
+      return;
+    }
+    return {
+      token,
+      expirationDate: new Date(expirationDate)
+    };
   }
 }
