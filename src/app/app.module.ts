@@ -12,7 +12,7 @@ import { ErrorInterceptor } from './error-interceptor.service';
 import { ErrorComponent } from './error/error.component';
 
 import { AngularMaterialModule } from '@modules/Angular-Material-Module/angular-material.module';
-import { PostsModule } from './posts/posts.module';
+import { PostsModule } from '@modules/posts/posts.module';
 import { AuthModule } from '@modules/auth/auth.module';
 
 @NgModule({
