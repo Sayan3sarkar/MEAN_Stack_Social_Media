@@ -13,7 +13,6 @@ import { ErrorComponent } from './error/error.component';
 
 import { AngularMaterialModule } from '@modules/Angular-Material-Module/angular-material.module';
 import { PostsModule } from '@modules/posts/posts.module';
-import { AuthModule } from '@modules/auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -27,8 +26,7 @@ import { AuthModule } from '@modules/auth/auth.module';
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
-    PostsModule,
-    AuthModule
+    PostsModule
   ],
   providers: [
     {
