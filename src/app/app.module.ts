@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +14,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { AuthInterceptor } from './auth/auth-interceptor.service';
 import { ErrorInterceptor } from './error-interceptor.service';
 import { ErrorComponent } from './error/error.component';
+
 import { AngularMaterialModule } from '@modules/Angular-Material-Module/angular-material.module';
 
 @NgModule({
@@ -32,7 +32,6 @@ import { AngularMaterialModule } from '@modules/Angular-Material-Module/angular-
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    MatInputModule,
     HttpClientModule,
     AngularMaterialModule
   ],
