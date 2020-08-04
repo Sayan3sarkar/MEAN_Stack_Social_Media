@@ -21,7 +21,7 @@ mongoose.connect(`${process.env.MONGODB_ATLAS_URI}`, { useUnifiedTopology: true,
 
 app.use(bodyParser.json());
 
-app.use('/images', express.static(path.join('backend/images'))); // gives access to static folders like images
+app.use('/images', express.static(path.join('images'))); // gives access to static folders like images
 
 // CORS Handling Middleware
 app.use((req, res, next) => {
