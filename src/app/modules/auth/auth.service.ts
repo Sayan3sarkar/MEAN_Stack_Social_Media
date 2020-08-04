@@ -39,8 +39,8 @@ export class AuthService {
       }
     }>(`${environment.API_ENDPOINT_URL}/auth/signup`, authData)
       .subscribe(res => {
-        console.log(res);
-        this.router.navigate(['/login']);
+        // console.log(res);
+        this.router.navigate(['/auth/login']);
       }, error => {
           this.authStatusListener.next(false);
       });
@@ -76,7 +76,7 @@ export class AuthService {
       email,
       password
     }).subscribe(res => {
-        console.log(res);
+        // console.log(res);
         this.token = res.token;
         if (this.token) {
           const expiresInDuration = res.expiresIn;

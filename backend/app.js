@@ -21,7 +21,7 @@ mongoose.connect(`${process.env.MONGODB_ATLAS_URI}`, { useUnifiedTopology: true,
 
 app.use(bodyParser.json());
 
-app.use('/images', express.static(path.join('backend/images'))); // gives access to static folders like images
+app.use('/images', express.static(path.join('images'))); // gives access to static folders like images
 
 // CORS Handling Middleware
 app.use((req, res, next) => {
@@ -53,7 +53,7 @@ cron.schedule('*/5 * * * *', () => { // cron job to delete non usable images eve
             });
             uncommonFiles = localFiles.filter(file => dbFileNames.indexOf(file) === -1);
             for (const file of uncommonFiles) {
-                fs.unlinkSync(path.join('backend/images/' + file));
+                fs.unlinkSync(path.join('images/' + file));
             }
             console.log('End CRON job');
         });

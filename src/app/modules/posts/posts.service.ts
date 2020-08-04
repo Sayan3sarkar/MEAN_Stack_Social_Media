@@ -35,7 +35,7 @@ export class PostsService {
       .pipe(map( postData => {
         return {
           posts: postData.posts.map(post => {
-            console.log(post);
+            // console.log(post);
             return {
               title: post.title,
               content: post.content,
@@ -48,7 +48,7 @@ export class PostsService {
         };
       }))
       .subscribe(transformedPostData => {
-        console.log(transformedPostData);
+        // console.log(transformedPostData);
         this.posts = transformedPostData.posts;
         this.postsUpdated.next({posts: this.posts.slice(), postCount: transformedPostData.maxPosts});
     });
