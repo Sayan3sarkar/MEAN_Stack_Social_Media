@@ -44,9 +44,9 @@ cron.schedule('*/5 * * * *', () => { // cron job to delete non usable images eve
             const imagePath = imagePathURL.pathname.split('/');
             dbFileNames.push(imagePath[2]);
         }
-        fs.readdir(path.join('backend/images'), (err, files) => {
+        fs.readdir(path.join('images'), (err, files) => {
             if (err) {
-                return console.log('Unable to scan directory');
+                return console.log('Unable to scan directory:' + err);
             }
             files.forEach(file => {
                 localFiles.push(file.toString());
